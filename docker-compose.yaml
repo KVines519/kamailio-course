@@ -1,5 +1,4 @@
 ---
-version: "3.9"
 services:
 
   sngrep:
@@ -15,7 +14,7 @@ services:
       - NET_ADMIN
 
   kamailio-edge:
-    image: kamailio/kamailio-ci:5.4-alpine.debug
+    image: ghcr.io/kamailio/kamailio-ci:6.1.2-alpine
     container_name: kamailio-edge
     ports:
       - "5090:5060"
