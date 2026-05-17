@@ -9,7 +9,7 @@ If you choose to work only from the main branch, and not start with course/01-ba
 git clone https://github.com/keithcroxford/kamailio-course.git
 cd kamailio-course
 chmod +x initial_setup.sh
-./init_setup.sh
+./initial_setup.sh
 
 ```
 
