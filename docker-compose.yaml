@@ -1,5 +1,4 @@
 ---
-version: "3.9"
 services:
 
   sngrep:
@@ -15,7 +14,7 @@ services:
       - NET_ADMIN
 
   kamailio-edge:
-    image: kamailio/kamailio-ci:5.4-alpine.debug
+    image: ghcr.io/kamailio/kamailio-ci:6.1.2-alpine
     container_name: kamailio-edge
     ports:
       - "5090:5060"
@@ -131,7 +130,7 @@ services:
         condition: service_started
 
   db:
-    image: mysql:5.7
+    image: mysql:8.4
     restart: always
     container_name: db01
     environment:
