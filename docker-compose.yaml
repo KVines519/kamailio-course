@@ -151,9 +151,9 @@ services:
   bind:
     image: internetsystemsconsortium/bind9:9.20
     container_name: bind
-    ports:
-      - "53:53/udp"
-      - "53:53/tcp"
+    expose:
+      - "53/udp"
+      - "53/tcp"
     volumes:
       - ./bind/named.conf:/etc/bind/named.conf
       - ./bind/named.conf.local:/etc/bind/named.conf.local
