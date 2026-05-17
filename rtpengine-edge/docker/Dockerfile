@@ -1,4 +1,4 @@
-FROM debian:trixie-20230725
+FROM debian:trixie-20260505
 
 RUN apt-get update \
   && apt-get -y --quiet --force-yes upgrade curl iproute2 \
