@@ -14,12 +14,14 @@ services:
       - NET_ADMIN
 
   kamailio-edge:
-    image: ghcr.io/kamailio/kamailio-ci:6.1.2-alpine
+    build:
+      context: ./kamailio-default
+      dockerfile: Dockerfile
     container_name: kamailio-edge
     ports:
       - "5090:5060"
     volumes:
-      - ./kamailio-default/:/etc/kamailio
+      - ./kamailio-default/etc/kamailio/:/etc/kamailio
     environment:
       - KAM_SHM_MEM_SIZE=256
     networks:
