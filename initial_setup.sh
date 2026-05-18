@@ -17,7 +17,7 @@ curl https://raw.githubusercontent.com/kamailio/kamailio/master/misc/examples/mi
 echo "*Starting Docker the inital DB will be created, yet blank* "
 docker compose up --build -d
 
-# FIX: Leverage Docker's native health status instead of testing the raw ping port
+# Leverage Docker's native health status 
 echo "*Waiting for MySQL to finish its multi-stage first-boot initialization...*"
 until [ "$(docker inspect --format='{{.State.Health.Status}}' db01)" = "healthy" ]; do
     echo -n "."
@@ -25,14 +25,13 @@ until [ "$(docker inspect --format='{{.State.Health.Status}}' db01)" = "healthy"
 done
 echo ""
 echo "*MySQL is completely responsive, healthy, and ready for production commands!*"
-echo "*Waiting 30 seconds anyway...becuase fuck Gemini!*"
-sleep 30
 
 # Force the kamailio user to use native passwords and require a valid TLS channel
 echo "*Upgrading Kamailio user authentication profile*"
-# FIX: Use localhost to firmly match MySQL's internal administrative root mappings
-docker exec db01 mysql -h localhost -u root -p=rw_password -e \
+# FIX: Removed the '=' from the -p flag argument string
+docker exec db01 mysql -h localhost -uroot -prw_password -e \
 "ALTER USER 'kamailio'@'%' IDENTIFIED WITH mysql_native_password BY 'kamailiorw' REQUIRE SSL; FLUSH PRIVILEGES;"
+
 
 # Run kamdbctl create inside the Docker container
 echo "*RECREATE AND REINIT THE KAMAILIO DB*" 
@@ -54,7 +53,8 @@ docker exec kamailio-edge sh -c "kamctl dispatcher add 1 sip:172.16.254.101:5060
 
 # Production Hardening: Re-enable global strict TLS/Secure Transport enforcement via runtime SQL
 echo "*Enforcing strict production-grade TLS secure transport*"
-docker exec db01 mysql -h localhost -u root -p=rw_password -e \
+# FIX: Removed the '=' from the -p flag argument string here as well
+docker exec db01 mysql -h localhost -uroot -prw_password -e \
 "SET GLOBAL require_secure_transport = ON;"
 
 # Move the proper file back to kamailio.cfg
