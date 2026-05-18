@@ -141,9 +141,9 @@ services:
       MYSQL_USER: 'user'
       MYSQL_PASSWORD: 'ro_password'
       MYSQL_ROOT_PASSWORD: 'rw_password'
-    command: >
-      --require-secure-transport=ON
-      --mysql-native-password=ON
+    command:
+      - "--require-secure-transport=ON"
+      - "--mysql-native-password=ON"
     ports:
       - '3306:3306'
     expose:
