@@ -61,6 +61,8 @@ DBROOTPW="rw_password"
 ## user name column
 # USERCOL="username"
 
+## TLS Verification
+MYSQL_EXTRA_OPTS="--ssl-mode=DISABLED"
 
 ## SQL definitions
 ## If you change this definitions here, then you must change them
