@@ -18,6 +18,8 @@ curl https://raw.githubusercontent.com/kamailio/kamailio/master/misc/examples/mi
 echo "*Starting Docker the inital DB will be created, yet blank* "
 docker compose up --build -d
 
+sleep 10
+
 # Force the kamailio user to use native passwords and require a valid TLS channel
 docker exec -it db01 mysql --protocol=socket -u root -p=rw_password -e \
 "ALTER USER 'kamailio'@'%' IDENTIFIED WITH mysql_native_password BY 'kamailiorw' REQUIRE SSL; FLUSH PRIVILEGES;"
