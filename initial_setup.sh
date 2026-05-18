@@ -18,9 +18,6 @@ curl https://raw.githubusercontent.com/kamailio/kamailio/master/misc/examples/mi
 echo "*Starting Docker the inital DB will be created, yet blank* "
 docker compose up --build -d
 
-echo "*sleep for 10 seconds. Allow everything to boot*"
-sleep 10
-
 # Run kamdbctl create inside the Docker container
 echo "*RECREATE AND REINIT THE KAMAILIO DB*" 
 docker exec kamailio-edge sh -c  "yes y | kamdbctl reinit kamailio"
