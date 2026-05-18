@@ -142,7 +142,7 @@ services:
       MYSQL_PASSWORD: 'ro_password'
       MYSQL_ROOT_PASSWORD: 'rw_password'
     command: >
-      --require-secure-transport=ON
+      --require-secure-transport=OFF
       --mysql-native-password=ON
       --ssl-ca=/etc/mysql/certs/ca.crt
       --ssl-cert=/etc/mysql/certs/server.crt
@@ -160,7 +160,7 @@ services:
       internal:
         ipv4_address: 172.16.254.10
     healthcheck:
-      test: ["CMD", "mysqladmin", "status", "--protocol=socket"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p=rw_password"]
       timeout: 5s
       retries: 5
       interval: 5s
