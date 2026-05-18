@@ -18,7 +18,14 @@ curl https://raw.githubusercontent.com/kamailio/kamailio/master/misc/examples/mi
 echo "*Starting Docker the inital DB will be created, yet blank* "
 docker compose up --build -d
 
-sleep 10
+# FIX: Active Verification Loop instead of an arbitrary sleep command
+echo "*Waiting for MySQL to completely finish initializing schemas...*"
+until docker exec db01 mysqladmin ping --protocol=socket -u root -p=rw_password &>/dev/null; do
+    echo -n "."
+    sleep 2
+done
+echo ""
+echo "*MySQL is fully responsive and initialized!*"
 
 # Force the kamailio user to use native passwords and require a valid TLS channel
 docker exec -it db01 mysql --protocol=socket -u root -p=rw_password -e \
