@@ -144,11 +144,9 @@ services:
     command: >
       --require-secure-transport=ON
       --mysql-native-password=ON
-      --authentication-policy=mysql_native_password
       --ssl-ca=/etc/mysql/certs/ca.crt
       --ssl-cert=/etc/mysql/certs/server.crt
       --ssl-key=/etc/mysql/certs/server.key
-      --tls-version=TLSv1.2,TLSv1.3
     ports:
       - '3306:3306'
     expose:
