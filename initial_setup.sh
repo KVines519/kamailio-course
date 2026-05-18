@@ -9,16 +9,6 @@ docker compose down
 echo "*Deleting the DB volume*"
 sudo rm -rf db
 
-# FIX: Recreate the directory and seed it with your CA certificates immediately.
-# This forces MySQL to boot with your valid certs instead of generating self-signed ones.
-echo "*Seeding clean production certificates into database volume*"
-mkdir -p db
-cp ./db-certs/ca.crt ./db/ca.pem
-cp ./db-certs/server.crt ./db/server-cert.pem
-cp ./db-certs/server.key ./db/server-key.pem
-# Enforce correct ownership permissions for the MySQL daemon container user
-sudo chown -R 999:999 db
-
 #obtain the minimal config to start kamailio
 echo "*Obtaining the Kamailio Minimal Config and renaming to kamailio.cfg*"
 curl https://raw.githubusercontent.com/kamailio/kamailio/master/misc/examples/mixed/kamailio-minimal-proxy.cfg -o ./kamailio-default/etc/kamailio/kamailio.cfg
