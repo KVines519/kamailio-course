@@ -23,7 +23,6 @@ until [ "$(docker inspect --format='{{.State.Health.Status}}' db01)" = "healthy"
     echo -n "."
     sleep 2
 done
-chmod 600 db-certs/server.key
 echo ""
 echo "*MySQL is completely responsive, healthy, and ready for production commands!*"
 
