@@ -23,6 +23,7 @@ services:
     volumes:
       - ./kamailio-default/etc/kamailio/:/etc/kamailio
       - ./kamailio-default/etc/resolv.conf:/etc/resolv.conf
+      - ./db-certs/ca.crt:/usr/local/share/ca-certificates/internal-ca.crt
     environment:
       - KAM_SHM_MEM_SIZE=256
       - COREIP=172.16.254.2
