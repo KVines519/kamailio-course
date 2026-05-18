@@ -8,7 +8,6 @@ docker compose down
 #
 echo "*Deleting the DB volume*"
 sudo rm -rf db
-mkdir db
 
 #obtain the minimal config to start kamailio
 echo "*Obtaining the Kamailio Minimal Config and renaming to kamailio.cfg*"
@@ -18,9 +17,9 @@ curl https://raw.githubusercontent.com/kamailio/kamailio/master/misc/examples/mi
 echo "*Starting Docker the inital DB will be created, yet blank* "
 docker compose up --build -d
 
-# FIX: Active Verification Loop instead of an arbitrary sleep command
+# Active Verification Loop
 echo "*Waiting for MySQL to completely finish initializing schemas...*"
-until docker exec db01 mysqladmin ping --protocol=socket -u root -p=rw_password &>/dev/null; do
+until docker exec db01 mysqladmin ping -h 127.0.0.1 -u root -p=rw_password &>/dev/null; do
     echo -n "."
     sleep 2
 done
@@ -28,7 +27,9 @@ echo ""
 echo "*MySQL is fully responsive and initialized!*"
 
 # Force the kamailio user to use native passwords and require a valid TLS channel
-docker exec -it db01 mysql --protocol=socket -u root -p=rw_password -e \
+echo "*Upgrading Kamailio user authentication profile*"
+# FIX: Use -h 127.0.0.1 to perfectly match how MySQL maps the root user account locally
+docker exec db01 mysql -h 127.0.0.1 -u root -p=rw_password -e \
 "ALTER USER 'kamailio'@'%' IDENTIFIED WITH mysql_native_password BY 'kamailiorw' REQUIRE SSL; FLUSH PRIVILEGES;"
 
 # Run kamdbctl create inside the Docker container
@@ -51,7 +52,7 @@ docker exec kamailio-edge sh -c "kamctl dispatcher add 1 sip:172.16.254.101:5060
 
 # Production Lock: Re-enable global strict TLS/Secure Transport enforcement via runtime SQL
 echo "*Enforcing strict production-grade TLS secure transport*"
-docker exec db01 mysql --protocol=socket -u root -p=rw_password -e \
+docker exec db01 mysql -h 127.0.0.1 -u root -p=rw_password -e \
 "SET GLOBAL require_secure_transport = ON;"
 
 # Move the proper file back to kamailio.cfg
