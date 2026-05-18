@@ -153,9 +153,9 @@ services:
       - '3306'
     volumes:
       - ./db:/var/lib/mysql
-      - ./db-certs/ca.crt:/etc/mysql/certs/ca.crt
-      - ./db-certs/server.crt:/etc/mysql/certs/server.crt
-      - ./db-certs/server.key:/etc/mysql/certs/server.key
+      - ./db-certs/ca.crt:/etc/mysql/certs/ca.crt:ro
+      - ./db-certs/server.crt:/etc/mysql/certs/server.crt:ro
+      - ./db-certs/server.key:/etc/mysql/certs/server.key:ro
     networks:
       internal:
         ipv4_address: 172.16.254.10
