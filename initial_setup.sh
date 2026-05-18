@@ -9,6 +9,16 @@ docker compose down
 echo "*Deleting the DB volume*"
 sudo rm -rf db
 
+# FIX: Recreate the directory and seed it with your CA certificates immediately.
+# This forces MySQL to boot with your valid certs instead of generating self-signed ones.
+echo "*Seeding clean production certificates into database volume*"
+mkdir -p db
+cp ./db-certs/ca.crt ./db/ca.pem
+cp ./db-certs/server.crt ./db/server-cert.pem
+cp ./db-certs/server.key ./db/server-key.pem
+# Enforce correct ownership permissions for the MySQL daemon container user
+sudo chown -R 999:999 db
+
 #obtain the minimal config to start kamailio
 echo "*Obtaining the Kamailio Minimal Config and renaming to kamailio.cfg*"
 curl https://raw.githubusercontent.com/kamailio/kamailio/master/misc/examples/mixed/kamailio-minimal-proxy.cfg -o ./kamailio-default/etc/kamailio/kamailio.cfg
@@ -30,7 +40,7 @@ echo "*MySQL is completely responsive, healthy, and ready for production command
 echo "*RECREATE AND REINIT THE KAMAILIO DB*" 
 docker exec kamailio-edge sh -c "yes y | kamdbctl reinit kamailio"
 
-# FIX STEP 2: Now that the user exists, alter its authentication profile safely
+# Now that the user exists, alter its authentication profile safely
 echo "*Upgrading Kamailio user authentication profile*"
 docker exec db01 mysql -h localhost -uroot -prw_password -e \
 "ALTER USER 'kamailio'@'%' IDENTIFIED WITH mysql_native_password BY 'kamailiorw' REQUIRE SSL; FLUSH PRIVILEGES;"
