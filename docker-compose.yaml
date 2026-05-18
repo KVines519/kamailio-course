@@ -15,11 +15,8 @@ services:
 
   kamailio-edge:
     build:
-      context: .\kamailio-default
+      context: ./kamailio-default
       dockerfile: Dockerfile
-    container_name: kamailio-edge
-    ports:
-      - "5090:5060"
     container_name: kamailio-edge
     ports:
       - "5090:5060"
