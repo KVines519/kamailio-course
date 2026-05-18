@@ -141,7 +141,7 @@ services:
       MYSQL_USER: 'user'
       MYSQL_PASSWORD: 'ro_password'
       MYSQL_ROOT_PASSWORD: 'rw_password'
-    command: --require-secure-transport=OFF --authentication-policy=mysql_native_password
+    command: --require-secure-transport=OFF --mysql-native-password=ON --authentication-policy=mysql_native_password
     ports:
       - '3306:3306'
     expose:
