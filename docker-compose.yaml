@@ -144,9 +144,6 @@ services:
     command: >
       --require-secure-transport=ON
       --mysql-native-password=ON
-      --ssl-ca=/etc/mysql/ssl/ca.pem
-      --ssl-cert=/etc/mysql/ssl/server-cert.pem
-      --ssl-key=/etc/mysql/ssl/server-key.pem
     ports:
       - '3306:3306'
     expose:
@@ -154,7 +151,7 @@ services:
     volumes:
       # Clear data storage block
       - ./db:/var/lib/mysql
-      # FIX: Mount your custom certificates safely as read-only (:ro) outside the data volume
+      # FIX: Mount your custom certificates safely outside the data volume
       - ./db-certs:/etc/mysql/ssl
       - ./db-certs/ssl.cnf:/etc/mysql/conf.d/ssl.cnf
     networks:
