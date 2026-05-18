@@ -18,6 +18,13 @@ curl https://raw.githubusercontent.com/kamailio/kamailio/master/misc/examples/mi
 echo "*Starting Docker the inital DB will be created, yet blank* "
 docker compose up --build -d
 
+# Force the kamailio user to use native passwords and require a valid TLS channel
+docker exec -it db01 mysql -u root -p=rw_password -e \
+"ALTER USER 'kamailio'@'%' IDENTIFIED WITH mysql_native_password BY 'kamailiorw' REQUIRE SSL;"
+
+# Flush the database privileges to apply the changes immediately
+docker exec -it db01 mysql -u root -p=rw_password -e "FLUSH PRIVILEGES;"
+
 # Run kamdbctl create inside the Docker container
 echo "*RECREATE AND REINIT THE KAMAILIO DB*" 
 docker exec kamailio-edge sh -c  "yes y | kamdbctl reinit kamailio"
