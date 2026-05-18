@@ -16,7 +16,7 @@ curl https://raw.githubusercontent.com/kamailio/kamailio/master/misc/examples/mi
 
 # Run the Docker container
 echo "*Starting Docker the inital DB will be created, yet blank* "
-docker compose up -d
+docker compose up --build -d
 
 echo "*sleep for 10 seconds. Allow everything to boot*"
 sleep 10
