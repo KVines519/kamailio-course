@@ -14,9 +14,7 @@ services:
       - NET_ADMIN
 
   kamailio-edge:
-    build:
-      context: ./kamailio-default
-      dockerfile: Dockerfile
+    image: ghcr.io/kamailio/kamailio-ci:6.1.2-alpine
     container_name: kamailio-edge
     ports:
       - "5090:5060"
