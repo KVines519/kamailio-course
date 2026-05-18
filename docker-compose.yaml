@@ -144,6 +144,9 @@ services:
     command:
       - "--require-secure-transport=ON"
       - "--mysql-native-password=ON"
+      - "--ssl-ca=/etc/mysql/ssl/ca.crt"
+      - "--ssl-cert=/etc/mysql/certs/server.crt"
+      - "--ssl-key=/etc/mysql/certs/server.key"
     ports:
       - '3306:3306'
     expose:
@@ -153,7 +156,6 @@ services:
       - ./db:/var/lib/mysql
       # FIX: Mount your custom certificates safely outside the data volume
       - ./db-certs:/etc/mysql/ssl
-      - ./db-cnf/ssl.cnf:/etc/mysql/conf.d/ssl.cnf
     networks:
       internal:
         ipv4_address: 172.16.254.10
