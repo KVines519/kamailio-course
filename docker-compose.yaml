@@ -1,5 +1,4 @@
 ---
-version: "3.9"
 services:
 
   sngrep:
@@ -15,12 +14,15 @@ services:
       - NET_ADMIN
 
   kamailio-edge:
-    image: kamailio/kamailio-ci:5.4-alpine.debug
+    build:
+      context: ./kamailio-default
+      dockerfile: Dockerfile
     container_name: kamailio-edge
     ports:
       - "5090:5060"
     volumes:
-      - ./kamailio-default/:/etc/kamailio
+      - ./kamailio-default/etc/kamailio/:/etc/kamailio
+      - ./kamailio-default/etc/kamailio/my.cnf:/etc/my.cnf:ro
     environment:
       - KAM_SHM_MEM_SIZE=256
       - COREIP=172.16.254.2
@@ -92,7 +94,7 @@ services:
         ipv4_address: 192.168.254.100
 
   db:
-    image: mysql:5.7
+    image: mysql:8.4
     restart: always
     container_name: db01
     environment:
@@ -100,15 +102,30 @@ services:
       MYSQL_USER: 'user'
       MYSQL_PASSWORD: 'ro_password'
       MYSQL_ROOT_PASSWORD: 'rw_password'
+    command:
+      - "--require-secure-transport=ON"
+      - "--mysql-native-password=ON"
+      - "--authentication_policy=mysql_native_password"
+      - "--ssl-ca=/etc/mysql/ssl/ca.crt"
+      - "--ssl-cert=/etc/mysql/ssl/server.crt"
+      - "--ssl-key=/etc/mysql/ssl/server.key"
     ports:
       - '3306:3306'
     expose:
       - '3306'
     volumes:
+      # Clear data storage block
       - ./db:/var/lib/mysql
+      # FIX: Mount your custom certificates safely outside the data volume
+      - ./db-certs:/etc/mysql/ssl
     networks:
       internal:
         ipv4_address: 172.16.254.10
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-p=rw_password"]
+      timeout: 5s
+      retries: 10
+      interval: 3s
 
 networks:
     external:
