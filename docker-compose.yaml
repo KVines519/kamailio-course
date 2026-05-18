@@ -38,7 +38,7 @@ services:
       rtpengine-edge:
         condition: service_started
       db:
-        condition: service_started
+        condition: service_healthy
     dns:
       - 172.16.254.20
     networks:
@@ -149,7 +149,12 @@ services:
     networks:
       internal:
         ipv4_address: 172.16.254.10
-
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p=rw_password"]
+      timeout: 5s
+      retries: 5
+      interval: 5s
+      
   bind:
     image: internetsystemsconsortium/bind9:9.20
     container_name: bind
