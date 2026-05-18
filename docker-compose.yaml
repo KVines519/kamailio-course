@@ -160,7 +160,7 @@ services:
       internal:
         ipv4_address: 172.16.254.10
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p=rw_password"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-p=rw_password"]
       timeout: 5s
       retries: 5
       interval: 5s
