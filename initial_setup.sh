@@ -40,6 +40,10 @@ echo "*adding dispatchers*"
 docker exec kamailio-edge sh -c "kamctl dispatcher add 1 sip:172.16.254.100:5060 0 0 '' 'internal_b2bua_01'"
 docker exec kamailio-edge sh -c "kamctl dispatcher add 1 sip:172.16.254.101:5060 0 0 '' 'internal_b2bua_02'"
 
+# Production Lock: Re-enable global strict TLS/Secure Transport enforcement via runtime SQL
+echo "*Enforcing strict production-grade TLS secure transport*"
+docker exec db01 mysql --protocol=socket -u root -p=rw_password -e \
+"SET GLOBAL require_secure_transport = ON;"
 
 # Move the proper file back to kamailio.cfg
 echo "*Obtaining the proper kamailio.cfg*"
