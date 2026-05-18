@@ -25,6 +25,8 @@ until [ "$(docker inspect --format='{{.State.Health.Status}}' db01)" = "healthy"
 done
 echo ""
 echo "*MySQL is completely responsive, healthy, and ready for production commands!*"
+echo "*Waiting 30 seconds anyway...becuase fuck Gemini!*"
+sleep 30
 
 # Force the kamailio user to use native passwords and require a valid TLS channel
 echo "*Upgrading Kamailio user authentication profile*"
