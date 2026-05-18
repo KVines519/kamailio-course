@@ -32,9 +32,9 @@ echo "*RECREATE AND REINIT THE KAMAILIO DB*"
 docker exec kamailio-edge sh -c "yes y | kamdbctl reinit kamailio"
 
 # Now that the user exists, alter its authentication profile safely
-echo "*Upgrading Kamailio user authentication profile*"
-docker exec db01 mysql -h localhost -uroot -prw_password -e \
-"ALTER USER 'kamailio'@'%' IDENTIFIED WITH mysql_native_password BY 'kamailiorw' REQUIRE SSL; FLUSH PRIVILEGES;"
+# echo "*Upgrading Kamailio user authentication profile*"
+# docker exec db01 mysql -h localhost -uroot -prw_password -e \
+# "ALTER USER 'kamailio'@'%' IDENTIFIED WITH mysql_native_password BY 'kamailiorw' REQUIRE SSL; FLUSH PRIVILEGES;"
 
 # add the RTPEngine instance to the DB
 echo "*ADDING RTPENGINE TO THE DB" 
