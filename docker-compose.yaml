@@ -144,18 +144,17 @@ services:
     command: >
       --require-secure-transport=OFF
       --mysql-native-password=ON
-      --ssl-ca=/etc/mysql/certs/ca.crt
-      --ssl-cert=/etc/mysql/certs/server.crt
-      --ssl-key=/etc/mysql/certs/server.key
     ports:
       - '3306:3306'
     expose:
       - '3306'
     volumes:
       - ./db:/var/lib/mysql
-      - ./db-certs/ca.crt:/etc/mysql/certs/ca.crt:ro
-      - ./db-certs/server.crt:/etc/mysql/certs/server.crt:ro
-      - ./db-certs/server.key:/etc/mysql/certs/server.key:ro
+      # FIX: Mount your corporate certificates DIRECTLY to the default configuration paths 
+      # that the official image checks during first-boot initialization.
+      - ./db-certs/ca.crt:/var/lib/mysql/ca.pem:ro
+      - ./db-certs/server.crt:/var/lib/mysql/server-cert.pem:ro
+      - ./db-certs/server.key:/var/lib/mysql/server-key.pem:ro
     networks:
       internal:
         ipv4_address: 172.16.254.10
