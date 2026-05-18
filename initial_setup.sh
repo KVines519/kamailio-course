@@ -17,19 +17,19 @@ curl https://raw.githubusercontent.com/kamailio/kamailio/master/misc/examples/mi
 echo "*Starting Docker the inital DB will be created, yet blank* "
 docker compose up --build -d
 
-# Active Verification Loop
-echo "*Waiting for MySQL to completely finish initializing schemas...*"
-until docker exec db01 mysqladmin ping -h 127.0.0.1 -u root -p=rw_password &>/dev/null; do
+# FIX: Leverage Docker's native health status instead of testing the raw ping port
+echo "*Waiting for MySQL to finish its multi-stage first-boot initialization...*"
+until [ "$(docker inspect --format='{{.State.Health.Status}}' db01)" = "healthy" ]; do
     echo -n "."
     sleep 2
 done
 echo ""
-echo "*MySQL is fully responsive and initialized!*"
+echo "*MySQL is completely responsive, healthy, and ready for production commands!*"
 
 # Force the kamailio user to use native passwords and require a valid TLS channel
 echo "*Upgrading Kamailio user authentication profile*"
-# FIX: Use -h 127.0.0.1 to perfectly match how MySQL maps the root user account locally
-docker exec db01 mysql -h 127.0.0.1 -u root -p=rw_password -e \
+# FIX: Use localhost to firmly match MySQL's internal administrative root mappings
+docker exec db01 mysql -h localhost -u root -p=rw_password -e \
 "ALTER USER 'kamailio'@'%' IDENTIFIED WITH mysql_native_password BY 'kamailiorw' REQUIRE SSL; FLUSH PRIVILEGES;"
 
 # Run kamdbctl create inside the Docker container
@@ -50,9 +50,9 @@ echo "*adding dispatchers*"
 docker exec kamailio-edge sh -c "kamctl dispatcher add 1 sip:172.16.254.100:5060 0 0 '' 'internal_b2bua_01'"
 docker exec kamailio-edge sh -c "kamctl dispatcher add 1 sip:172.16.254.101:5060 0 0 '' 'internal_b2bua_02'"
 
-# Production Lock: Re-enable global strict TLS/Secure Transport enforcement via runtime SQL
+# Production Hardening: Re-enable global strict TLS/Secure Transport enforcement via runtime SQL
 echo "*Enforcing strict production-grade TLS secure transport*"
-docker exec db01 mysql -h 127.0.0.1 -u root -p=rw_password -e \
+docker exec db01 mysql -h localhost -u root -p=rw_password -e \
 "SET GLOBAL require_secure_transport = ON;"
 
 # Move the proper file back to kamailio.cfg
